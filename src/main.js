@@ -124,10 +124,20 @@ new Vue({
             createUser("老三", "男"),
             createUser("老四", "女")
         ],
-        displayName: null
+        gender: '',
     },
-    created() {
-        this.displayName = this.user
+    computed: {
+        // eslint-disable-next-line vue/return-in-computed-property
+        displayName() {
+            const {user, gender} = this
+            if (gender === "") {
+                return user
+            } else if (gender === "female") {
+                return user.filter(x => x.gender === "女")
+            } else if (gender === "male") {
+                return user.filter(x => x.gender === "男")
+            }
+        }
     },
     template: `
       <div>
@@ -142,13 +152,13 @@ new Vue({
       </div>`,
     methods: {
         all() {
-            this.displayName = this.user
+            this.gender = ""
         },
         male() {
-            this.displayName = this.user.filter(x => x.gender === "男")
+            this.gender = "male"
         },
         female() {
-            this.displayName = this.user.filter(x => x.gender === "女")
+            this.gender = "female"
         }
     }
 }).$mount("#app")
