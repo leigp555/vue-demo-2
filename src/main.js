@@ -111,6 +111,7 @@ Vue.config.productionTip = false
 
 let n = 0
 
+
 function createUser(name, gender) {
     n += 1
     return {id: n, name: name, gender: gender}
@@ -129,37 +130,36 @@ new Vue({
     computed: {
         // eslint-disable-next-line vue/return-in-computed-property
         displayName() {
+            // console.log("计算了一次")   证明computed有缓存
+            const hash={
+                male:"男",
+                female: "女"
+            }
             const {user, gender} = this
             if (gender === "") {
                 return user
-            } else if (gender === "female") {
-                return user.filter(x => x.gender === "女")
-            } else if (gender === "male") {
-                return user.filter(x => x.gender === "男")
+            } else if (gender === "female"||gender==="male" ) {  //还可以简化成 typeof gender==="string"
+                return user.filter(x => x.gender === hash[gender])
+            }else {
+                throw new Error("gender值不存在")
             }
         }
     },
     template: `
       <div>
       <div>
-        <button @click="all">全部</button>
-        <button @click="male">男</button>
-        <button @click="female">女</button>
+        <button @click="setGender('')">全部</button>
+        <button @click="setGender('male')">男</button>
+        <button @click="setGender('female')">女</button>
       </div>
       <ul>
         <li v-for="(n,index) in displayName" :key="index">{{ n.name }}-{{ n.gender }}</li>
       </ul>
       </div>`,
     methods: {
-        all() {
-            this.gender = ""
+        setGender(string) {
+            this.gender = string
         },
-        male() {
-            this.gender = "male"
-        },
-        female() {
-            this.gender = "female"
-        }
     }
 }).$mount("#app")
 
